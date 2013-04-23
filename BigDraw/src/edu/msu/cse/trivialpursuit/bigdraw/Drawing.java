@@ -28,7 +28,7 @@ public class Drawing {
 	        /**
 	         * Color of segment
 	         */
-	        private int color = Color.WHITE;
+	        private int color = Color.BLACK;
 
 			/**
 	         * Thickness of segment
@@ -243,6 +243,7 @@ public class Drawing {
 				paint.setColor(segment.getColor());
 				paint.setStrokeWidth(segment.getThickness());
 				canvas.drawLine(prevX, prevY, currX, currY, paint);
+				canvas.drawCircle(currX, currY, segment.getThickness()/2, paint);
 			}
 			canvas.restore();
 		}
