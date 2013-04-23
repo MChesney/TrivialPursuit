@@ -28,7 +28,7 @@ public class Drawing {
 	        /**
 	         * Color of segment
 	         */
-	        private int color = Color.BLACK;
+	        private int color = Color.WHITE;
 
 			/**
 	         * Thickness of segment
