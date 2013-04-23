@@ -1,0 +1,36 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <edu.msu.cse.trivialpursuit.bigdraw.DrawView
+        android:id="@+id/drawView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true" />
+
+    <ToggleButton
+        android:id="@+id/drawToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:textOff="@string/draw"
+        android:textOn="@string/pause"
+        android:onClick="onDrawToggle" />
+
+    <SeekBar
+        android:id="@+id/thicknessBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/drawToggle"
+        android:layout_toRightOf="@+id/drawToggle"
+        android:max="19"
+        android:progress="9" />
+
+</RelativeLayout>

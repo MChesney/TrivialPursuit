@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Big Draw</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="draw">Draw</string>
+    <string name="pause">Pause</string>
+    <string name="crosshair_description">Crosshair</string>
+
+</resources>
