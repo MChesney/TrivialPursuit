@@ -22,6 +22,7 @@ public class DrawView extends View {
 	private float crosshairX = 0;
 	private float crosshairY = 0;
 	
+
 	public DrawView(Context context) {
 		super(context);
 		drawing = new Drawing(context, this);
@@ -44,7 +45,8 @@ public class DrawView extends View {
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);	
 		drawing.draw(canvas);
-		canvas.drawBitmap(crosshair, crosshairX, crosshairY, null);
+		//canvas.drawBitmap(crosshair, crosshairX, crosshairY, null);
+		
 	}
 	
 	/**
@@ -77,6 +79,10 @@ public class DrawView extends View {
 	public void setEditable(boolean isEditable) {
 		drawing.setEditable(isEditable);
 	}
+	
+	public boolean updateDrawing(float x, float y) {
+		  return drawing.updateDrawing(this, x, y);
+		}
 	
 //	/**
 //	 * Load the drawing

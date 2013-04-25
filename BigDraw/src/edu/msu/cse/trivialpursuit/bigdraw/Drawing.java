@@ -131,6 +131,7 @@ public class Drawing {
 	    	 * Constructor for Point with two integers
 	    	 */
 	    	public Point(float x, float y) {
+	    		
 	    		this.x = x;
 	    		this.y = y;
 	    	}
@@ -192,14 +193,14 @@ public class Drawing {
 		/**
 	     * The drawing view in this activity's view
 	     */
-	    //private DrawView drawView;
+	    private DrawView drawView;
 		
 		/**
 		 * Constructor for Drawing
 		 * Initializes paint color and thickness
 		 */
 		public Drawing(Context context, DrawView drawView) {
-			//this.drawView = drawView;
+			this.drawView = drawView;
 			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			paint.setColor(color);
 			paint.setStrokeWidth(thickness);
@@ -341,4 +342,12 @@ public class Drawing {
 //			bundle.putFloatArray(END_POINTS, endPoints);
 //		}
 
+		public boolean updateDrawing (View view, float x, float y){
+			addSegments(x, y);
+    		lastX = x;
+    		lastY = y;
+    		view.invalidate();
+    		return true;
+		}
+		
 }
