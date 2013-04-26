@@ -223,6 +223,7 @@ public class MainActivity extends Activity {
 		 System.out.println(height);
 		 System.out.println(width);
 		 
+		 
 		/* if (startx ==0 || starty ==0) {
 			 startx = (float) origLongitude;
 			 starty = (float) origLatitude;

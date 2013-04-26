@@ -40,6 +40,7 @@ public class Drawing {
 	         */
 	        private Point lastPoint = null;
 	        
+	        
 	        /**
 	         * Current point of segment
 	         */
