@@ -17,9 +17,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
 import android.view.Menu;
-import android.view.View;
 import android.widget.SeekBar;
-import android.widget.ToggleButton;
 
 public class MainActivity extends Activity {
 	
@@ -65,11 +63,7 @@ public class MainActivity extends Activity {
 	 */
 	private DrawView drawView;
 	
-	/**
-	 * The thickness bar
-	 */
-	private SeekBar thicknessBar;  
-	
+		
 	/**
 	 * The draw toggle
 	 */
