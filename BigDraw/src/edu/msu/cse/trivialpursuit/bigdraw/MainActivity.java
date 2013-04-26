@@ -234,7 +234,11 @@ public class MainActivity extends Activity {
 		 System.out.println("changex"+changex);
 		 System.out.println("changey"+changey);*/
 		 
-		 	double A =  42.724987, B=42.724228, X=-84.481935, Y=-84.480143;
+		 	//engineering building coordinates
+		 	//double A =  42.724987, B=42.724228, X=-84.481935, Y=-84.480143;
+		 
+		 	//msu campus coordinates
+		 	double A =  42.735508, B=42.718705, X=-84.462297, Y=-84.493968;
  			double Z= Y-X;
  			double C= A-B;
  			double J= currLongitude, K=currLatitude;
