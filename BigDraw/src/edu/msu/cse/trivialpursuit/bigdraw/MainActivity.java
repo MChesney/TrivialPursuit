@@ -100,28 +100,7 @@ public class MainActivity extends Activity {
 		
 		drawView = (DrawView) this.findViewById(R.id.drawView);
 		
-		//drawToggle = (ToggleButton) findViewById(R.id.drawToggle);
-		//thicknessBar = (SeekBar) findViewById(R.id.thicknessBar);
 			
-		/*thicknessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {
-				drawView.setThickness(progress + 1);
-			}
-
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-			}
-		});*/
-		
 		// Get the location manager
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);        
 	}
@@ -200,21 +179,21 @@ public class MainActivity extends Activity {
             return;
         }        
         
-        origLatitude = currLatitude;
-        origLongitude = currLongitude;
-        
         currLatitude = location.getLatitude();
         currLongitude = location.getLongitude();
         
-        System.out.println("origLatitude"+origLatitude);
-        System.out.println("origLongitude"+origLongitude);
+        origLatitude = currLatitude;
+        origLongitude = currLongitude;
+        
+        System.out.println("origLatitude "+origLatitude);
+        System.out.println("origLongitude "+origLongitude);
         
         valid = true;
         
-        float[] results = new float[1];
+         float[] results = new float[1];
 		 Location.distanceBetween(origLatitude, origLongitude, currLatitude, currLongitude, results);
 		 float distance = results[0];
-		 System.out.println(distance);
+		 System.out.println("distance "+distance);
 		 
 		 DisplayMetrics metrics = new DisplayMetrics();
 		 getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -254,7 +233,7 @@ public class MainActivity extends Activity {
 		 System.out.println("changex"+changex);
 		 System.out.println("changey"+changey);*/
 		 
-		 	double A =  42.735508, B=42.718705, X=-84.462297, Y=-84.493968;
+		 	double A =  42.724987, B=42.724228, X=-84.481935, Y=-84.480143;
  			double Z= Y-X;
  			double C= A-B;
  			double J= currLongitude, K=currLatitude;

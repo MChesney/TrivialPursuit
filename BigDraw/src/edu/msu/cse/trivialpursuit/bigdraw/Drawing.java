@@ -262,14 +262,14 @@ public class Drawing {
 				float y = event.getY();
 			
 				switch(event.getActionMasked()) {
-				case MotionEvent.ACTION_DOWN:
+				/*case MotionEvent.ACTION_DOWN:
 					lastX = x;
 					lastY = y;
 					return true;
 				
 	        	case MotionEvent.ACTION_UP:
 	        	case MotionEvent.ACTION_CANCEL:
-	        		return true;
+	        		return true;*/
 	        	
 	        	case MotionEvent.ACTION_MOVE:
 	        		addSegments(x, y);
