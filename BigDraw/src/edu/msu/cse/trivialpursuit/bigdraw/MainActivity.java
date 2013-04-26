@@ -2,6 +2,7 @@ package edu.msu.cse.trivialpursuit.bigdraw;
 
 import java.util.List;
 
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,6 +17,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Menu;
 import android.widget.SeekBar;
 
@@ -182,25 +184,24 @@ public class MainActivity extends Activity {
         currLatitude = location.getLatitude();
         currLongitude = location.getLongitude();
         
-        origLatitude = currLatitude;
-        origLongitude = currLongitude;
+        //origLatitude = currLatitude;
+        //origLongitude = currLongitude;
         
         System.out.println("origLatitude "+origLatitude);
         System.out.println("origLongitude "+origLongitude);
         
         valid = true;
         
-         float[] results = new float[1];
+         /*float[] results = new float[1];
 		 Location.distanceBetween(origLatitude, origLongitude, currLatitude, currLongitude, results);
 		 float distance = results[0];
-		 System.out.println("distance "+distance);
-		 
-		 DisplayMetrics metrics = new DisplayMetrics();
-		 getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		 int height = metrics.heightPixels;
-		 int width = metrics.widthPixels;
-		 System.out.println(height);
-		 System.out.println(width);
+		 System.out.println("distance "+distance);*/
+			 
+		 Display display = getWindowManager().getDefaultDisplay();
+		 Point size = new Point();
+		 display.getSize(size);
+		 int width = size.x;
+		 int height = size.y;
 		 
 		 
 		/* if (startx ==0 || starty ==0) {
@@ -240,7 +241,9 @@ public class MainActivity extends Activity {
  			Xpixel = ((Y-J)/Z)*width;
  			Ypixel = ((A-K)/C)*height;
  			//double Xpixel = ((180+J)*width/360), Ypixel = ((90-K)*height/180);
+ 			if (origLatitude != currLatitude){
  			drawView.updateDrawing((float)Xpixel, (float)Ypixel);
+ 			}
  			
  			 System.out.println(Xpixel);
  			 System.out.println(Ypixel);
