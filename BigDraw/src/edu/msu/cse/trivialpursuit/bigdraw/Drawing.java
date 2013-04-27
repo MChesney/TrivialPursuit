@@ -40,6 +40,7 @@ public class Drawing {
 	         */
 	        private Point lastPoint = null;
 	        
+	        
 	        /**
 	         * Current point of segment
 	         */
@@ -131,6 +132,7 @@ public class Drawing {
 	    	 * Constructor for Point with two integers
 	    	 */
 	    	public Point(float x, float y) {
+	    		
 	    		this.x = x;
 	    		this.y = y;
 	    	}
@@ -192,14 +194,14 @@ public class Drawing {
 		/**
 	     * The drawing view in this activity's view
 	     */
-	    //private DrawView drawView;
+	    private DrawView drawView;
 		
 		/**
 		 * Constructor for Drawing
 		 * Initializes paint color and thickness
 		 */
 		public Drawing(Context context, DrawView drawView) {
-			//this.drawView = drawView;
+			this.drawView = drawView;
 			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			paint.setColor(color);
 			paint.setStrokeWidth(thickness);
@@ -260,14 +262,14 @@ public class Drawing {
 				float y = event.getY();
 			
 				switch(event.getActionMasked()) {
-				case MotionEvent.ACTION_DOWN:
+				/*case MotionEvent.ACTION_DOWN:
 					lastX = x;
 					lastY = y;
 					return true;
 				
 	        	case MotionEvent.ACTION_UP:
 	        	case MotionEvent.ACTION_CANCEL:
-	        		return true;
+	        		return true;*/
 	        	
 	        	case MotionEvent.ACTION_MOVE:
 	        		addSegments(x, y);
@@ -341,4 +343,12 @@ public class Drawing {
 //			bundle.putFloatArray(END_POINTS, endPoints);
 //		}
 
+		public boolean updateDrawing (View view, float x, float y){
+			addSegments(x, y);
+    		lastX = x;
+    		lastY = y;
+    		view.invalidate();
+    		return true;
+		}
+		
 }
