@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.view.Menu;
+import android.view.View;
 
 public class MainActivity extends Activity {
 	// TODO deleted android support?
@@ -76,5 +77,10 @@ public class MainActivity extends Activity {
 			accelListener = new AccelListener();
 			sensorManager.registerListener(accelListener, accelSensor, SensorManager.SENSOR_DELAY_GAME);
 		}
+	}
+	
+	public void onSend(View view) {
+		ViewSender sender = new ViewSender();
+		sender.sendView(this, drawView, "Trivial Pursuit");
 	}
 }
