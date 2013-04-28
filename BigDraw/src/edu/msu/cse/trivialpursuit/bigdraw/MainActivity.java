@@ -47,8 +47,7 @@ public class MainActivity extends Activity {
 		Xpixel = xpixel;
 	}
 
-	public static Context getContext()
-	{
+	public static Context getContext(){
 		return mainActivity;
 	}
 	public static double getYpixel() {
@@ -108,13 +107,10 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		drawView = (DrawView) this.findViewById(R.id.drawView);
-		//drawToggle = (ToggleButton) findViewById(R.id.drawToggle);
-		//thicknessBar = (SeekBar) findViewById(R.id.thicknessBar);
 		colorDisplay = (FrameLayout)this.findViewById(R.id.colorDisplay);
 		// Get the location manager
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);   
-        mainActivity = this;      
-        colorDisplay.setBackgroundColor(drawView.getColor());
+        mainActivity = this;      colorDisplay.setBackgroundColor(drawView.getColor());
 	}
 	
 

@@ -22,7 +22,6 @@ public class DrawView extends View {
 	private Bitmap crosshair = BitmapFactory.decodeResource(getResources(), R.drawable.crosshair);
 	private float crosshairX = 0;
 	private float crosshairY = 0;
-	
 
 	public DrawView(Context context) {
 		super(context);
@@ -45,9 +44,7 @@ public class DrawView extends View {
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);	
-		drawing.draw(canvas);
-		//canvas.drawBitmap(crosshair, crosshairX, crosshairY, null);
-		
+		drawing.draw(canvas);		
 	}
 	
 	/**
@@ -57,6 +54,8 @@ public class DrawView extends View {
 	public boolean onTouchEvent(MotionEvent event) {
 		crosshairX = event.getX(0) - crosshair.getWidth()/2;
 		crosshairY = event.getY(0) - crosshair.getHeight()/2;
+		FrameLayout colorDisplay = (FrameLayout) this.findViewById(R.id.colorDisplay);
+		colorDisplay.setBackgroundColor(drawing.getCurrColor());
 		return drawing.onTouchEvent(this, event);
 	}
 	
@@ -65,8 +64,6 @@ public class DrawView extends View {
 	 */
 	public void setColor(int color) {
 		drawing.setCurrColor(color);
-		FrameLayout colorDisplay = (FrameLayout) this.findViewById(R.id.colorDisplay);
-		colorDisplay.setBackgroundColor(color);
 	}
 	
 	/**
@@ -94,19 +91,5 @@ public class DrawView extends View {
 	public boolean updateDrawing(float x, float y) {
 		  return drawing.updateDrawing(this, x, y);
 		}
-	
-//	/**
-//	 * Load the drawing
-//	 */
-//	public void loadView(Bundle bundle) {
-//		drawing.loadDrawing(bundle);
-//	}
-//	
-//	/**
-//	 * Save the drawing
-//	 */
-//	public void saveView(Bundle bundle) {
-//		drawing.saveDrawing(bundle);
-//	}
 
 }
