@@ -27,7 +27,6 @@ public class MainActivity extends Activity {
     
     private double origLatitude = 0;
     private double origLongitude = 0;
-    private boolean valid = false;
     private double currLatitude = 0;
     private double currLongitude = 0;
     private static double Xpixel = 0;
@@ -65,12 +64,6 @@ public class MainActivity extends Activity {
 	 */
 	private DrawView drawView;
 	
-		
-	/**
-	 * The draw toggle
-	 */
-	//private ToggleButton drawToggle; 
-	
 	private class AccelListener implements SensorEventListener {
 
 		@Override
@@ -102,7 +95,6 @@ public class MainActivity extends Activity {
 		
 		drawView = (DrawView) this.findViewById(R.id.drawView);
 		
-			
 		// Get the location manager
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);        
 	}
@@ -113,11 +105,6 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
-	
-	/*public void onDrawToggle(View view) {
-		drawView.setEditable(!drawToggle.isChecked());
-	}*/
-	
 	
 	private class ActiveListener implements LocationListener {
 
@@ -183,19 +170,6 @@ public class MainActivity extends Activity {
         
         currLatitude = location.getLatitude();
         currLongitude = location.getLongitude();
-        
-        //origLatitude = currLatitude;
-        //origLongitude = currLongitude;
-        
-        System.out.println("origLatitude "+origLatitude);
-        System.out.println("origLongitude "+origLongitude);
-        
-        valid = true;
-        
-         /*float[] results = new float[1];
-		 Location.distanceBetween(origLatitude, origLongitude, currLatitude, currLongitude, results);
-		 float distance = results[0];
-		 System.out.println("distance "+distance);*/
 			 
 		 Display display = getWindowManager().getDefaultDisplay();
 		 Point size = new Point();
@@ -203,69 +177,22 @@ public class MainActivity extends Activity {
 		 int width = size.x;
 		 int height = size.y;
 		 
+		 //engineering building coordinates
+		 double LatA = 42.724987, LatB = 42.724228, LongX = -84.481935, LongY = -84.480143;
 		 
-		/* if (startx ==0 || starty ==0) {
-			 startx = (float) origLongitude;
-			 starty = (float) origLatitude;
+		 // Parking lot coordinates
+		 //double LatA = 42.725916, LatB = 42.72534, LongX = -84.481854, LongY = -84.480475;
+		 	
+		 double Z = LongY-LongX;
+		 double C = LatA-LatB;
+		 double J = currLongitude;
+		 double K = currLatitude;
+		 Xpixel = ((LongY-J)/Z)*width;
+		 Ypixel = ((LatA-K)/C)*height;
+		 //double Xpixel = ((180+J)*width/360), Ypixel = ((90-K)*height/180);
+		 if (origLatitude != currLatitude) {
+			 drawView.updateDrawing((float)Xpixel, (float)Ypixel);
 		 }
-		 
-		 changex = (float) (currLongitude - startx);
-		 changey = (float) (currLatitude - starty);
-		 
-		 if (changex <0){
-			 changex = changex*10;
-		 }
-		 if (changex >10){
-			 changex = changex/10;
-		 }
-		 if (changey <0){
-			 changey = changey*10;
-		 }
-		 if (changey >10){
-			 changey = changey/10;
-		 }
-		 
-		 changex = changex*100000;
-		 changey = changey*100000;
-		 drawx += changex;
-		 drawy += changey;
-		 
-		 System.out.println("startx"+startx);
-		 System.out.println("changex"+changex);
-		 System.out.println("changey"+changey);*/
-		 
-		 	//engineering building coordinates
-		 	//double A =  42.724987, B=42.724228, X=-84.481935, Y=-84.480143;
-		 
-		 	//msu campus coordinates
-		 	double A =  42.735508, B=42.718705, X=-84.462297, Y=-84.493968;
- 			double Z= Y-X;
- 			double C= A-B;
- 			double J= currLongitude, K=currLatitude;
- 			Xpixel = ((Y-J)/Z)*width;
- 			Ypixel = ((A-K)/C)*height;
- 			//double Xpixel = ((180+J)*width/360), Ypixel = ((90-K)*height/180);
- 			if (origLatitude != currLatitude){
- 			drawView.updateDrawing((float)Xpixel, (float)Ypixel);
- 			}
- 			
- 			 System.out.println(Xpixel);
- 			 System.out.println(Ypixel);
-		 
-		 	/*currLatitude = currLatitude * Math.PI / 180;
-		    currLongitude = currLongitude * Math.PI / 180;
-
-		    double x = 6371 * Math.sin(currLatitude) * Math.cos(currLongitude);
-		    double y = 6371 * Math.sin(currLatitude) * Math.sin(currLongitude);
-		    
-		    System.out.println(x);
-			System.out.println(y);*/
- 			  		 			
- 		
- 		//viewDistance.setText(String.format("%1$6.1fm", distance));
-
-        //Set these values to draw as they change***********
-        //by updating the draw interface
     }
 
 	

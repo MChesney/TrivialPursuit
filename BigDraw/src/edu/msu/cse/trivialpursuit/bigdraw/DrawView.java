@@ -45,18 +45,7 @@ public class DrawView extends View {
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);	
 		drawing.draw(canvas);
-		//canvas.drawBitmap(crosshair, crosshairX, crosshairY, null);
-		
-	}
-	
-	/**
-	 * Handle a touch event
-	 */
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		crosshairX = event.getX(0) - crosshair.getWidth()/2;
-		crosshairY = event.getY(0) - crosshair.getHeight()/2;
-		return drawing.onTouchEvent(this, event);
+		canvas.drawBitmap(crosshair, crosshairX, crosshairY, null);
 	}
 	
 	/**
@@ -81,21 +70,9 @@ public class DrawView extends View {
 	}
 	
 	public boolean updateDrawing(float x, float y) {
-		  return drawing.updateDrawing(this, x, y);
-		}
-	
-//	/**
-//	 * Load the drawing
-//	 */
-//	public void loadView(Bundle bundle) {
-//		drawing.loadDrawing(bundle);
-//	}
-//	
-//	/**
-//	 * Save the drawing
-//	 */
-//	public void saveView(Bundle bundle) {
-//		drawing.saveDrawing(bundle);
-//	}
+		crosshairX = x - crosshair.getWidth()/2;
+		crosshairY = y - crosshair.getHeight()/2;
+		return drawing.updateDrawing(this, x, y);
+	}
 
 }

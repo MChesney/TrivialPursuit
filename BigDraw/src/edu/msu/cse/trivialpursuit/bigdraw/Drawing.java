@@ -74,49 +74,6 @@ public class Drawing {
 	           
 	    }
 	    
-	    /**
-	     * Local class to handle the touch status for one touch.
-	     * We will have one object of this type for each of the 
-	     * two possible touches.
-	     */
-	    //private class Touch {
-	        /**
-	         * Touch id
-	         */
-	        //public int id = -1;
-	        
-	        /**
-	         * Current touch location
-	         */
-	        //public Point currTouch = new Point(0,0);       
-	        
-	        /**
-	         * Previous touch location
-	         */
-	        //public Point lastTouch = new Point(0,0);
-	        
-	        /**
-	         * Change in values from previous
-	         */
-	        //public Point deltas = new Point(0,0);       
-	        
-	        /**
-	         * Copy the current values to the previous values
-	         */
-	        /*public void copyToLast() {
-	            lastTouch.x = currTouch.x;
-	            lastTouch.y = currTouch.y;
-	        }*/
-	        
-	        /**
-	         * Compute the values of dX and dY
-	         */
-	        /*public void computeDeltas() {
-	            deltas.x = currTouch.x - lastTouch.x;
-	            deltas.y = currTouch.y - lastTouch.y;
-	        }*/
-	    //}
-	    
 	    private class Point {
 	    	/** 
 	    	 * x-value of point
@@ -251,99 +208,18 @@ public class Drawing {
 		}
 		
 		/**
-		 * Handle a touch event from the view.
-		 * @param view The view that is the source of the touch
-		 * @param event The motion event describing the touch
-		 * @return true if the touch is handled
-		 */
-		public boolean onTouchEvent(View view, MotionEvent event) {
-			if(editable) {
-				float x = event.getX();
-				float y = event.getY();
-			
-				switch(event.getActionMasked()) {
-				/*case MotionEvent.ACTION_DOWN:
-					lastX = x;
-					lastY = y;
-					return true;
-				
-	        	case MotionEvent.ACTION_UP:
-	        	case MotionEvent.ACTION_CANCEL:
-	        		return true;*/
-	        	
-	        	case MotionEvent.ACTION_MOVE:
-	        		addSegments(x, y);
-	        		lastX = x;
-	        		lastY = y;
-	        		view.invalidate();
-	        		return true;
-				}
-			}
-			return false;
-		}
-		
-		/**
 		 * Every time the finger moves, add a segment to the array of segments
 		 */
 		public void addSegments(float x, float y) {
 			Segment segment = new Segment(new Point(lastX, lastY), new Point(x, y), color, thickness);
 			segments.add(segment);
 		}
-		
-//		/**
-//		 * Load the drawing 
-//		 */
-//		public void loadDrawing(Bundle bundle) {
-//			// Load the drawing parameters
-//			params = (Parameters) bundle.getSerializable(PARAMETERS);
-//			isEditable = bundle.getBoolean(EDITABLE);
-//			
-//			// Load the drawing segments
-//			int [] colors = bundle.getIntArray(COLORS);
-//			float [] thicknesses = bundle.getFloatArray(THICKNESSES);
-//			float [] startPoints = bundle.getFloatArray(START_POINTS);
-//			float [] endPoints = bundle.getFloatArray(END_POINTS);
-//			
-//			for (int i = 0; i < colors.length; i++) {
-//				Point prevPoint = new Point(startPoints[i*2], startPoints[i*2+1]);
-//				Point currPoint = new Point(endPoints[i*2], endPoints[i*2+1]);
-//				Segment segment = new Segment(prevPoint, currPoint, colors[i], thicknesses[i]);
-//				segments.add(segment);
-//			}
-//
-//		}
-//		
-//		/**
-//		 * Save the drawing
-//		 */
-//		public void saveDrawing(Bundle bundle) {
-//			// Save the drawing parameters
-//			bundle.putSerializable(PARAMETERS, params);
-//			bundle.putBoolean(EDITABLE, isEditable);
-//			
-//			// Save the drawing segments
-//			int [] colors = new int[segments.size()];
-//			float [] thicknesses = new float[segments.size()];
-//			float [] startPoints = new float[segments.size()*2];
-//			float [] endPoints = new float[segments.size()*2];
-//			
-//			for (int i=0; i < segments.size(); i++) {
-//				Segment segment = segments.get(i);
-//				colors[i] = segment.getColor();
-//				thicknesses[i] = segment.getThickness();
-//				startPoints[i*2] = segment.getLastPoint().x;
-//				startPoints[i*2+1] = segment.getLastPoint().y;
-//				endPoints[i*2] = segment.getCurrPoint().x;
-//				endPoints[i*2+1] = segment.getCurrPoint().y;
-//			}
-//			
-//			bundle.putIntArray(COLORS, colors);
-//			bundle.putFloatArray(THICKNESSES, thicknesses);
-//			bundle.putFloatArray(START_POINTS, startPoints);
-//			bundle.putFloatArray(END_POINTS, endPoints);
-//		}
 
 		public boolean updateDrawing (View view, float x, float y){
+			if (segments.size() == 0) {
+				lastX = x;
+				lastY = y;
+			}
 			addSegments(x, y);
     		lastX = x;
     		lastY = y;
