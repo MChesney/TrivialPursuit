@@ -13,24 +13,26 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true" />
 
-    <ToggleButton
-        android:id="@+id/drawToggle"
+    <FrameLayout
+        android:id="@+id/colorDisplay"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignBottom="@+id/sendButton"
+        android:layout_alignTop="@+id/sendButton"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/sendButton"
+        android:background="@android:color/black"
+        android:scrollbarStyle="insideOverlay" />
+
+    <Button
+        android:id="@+id/sendButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:textOff="@string/draw"
-        android:textOn="@string/pause"
-        android:onClick="onDrawToggle" />
-
-    <SeekBar
-        android:id="@+id/thicknessBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignTop="@+id/drawToggle"
-        android:layout_toRightOf="@+id/drawToggle"
-        android:max="19"
-        android:progress="9" />
+        android:layout_alignParentRight="true"
+        android:text="@string/send"
+        android:onClick="onSend" />
 
 </RelativeLayout>

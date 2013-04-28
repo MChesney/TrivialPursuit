@@ -3,11 +3,13 @@ package edu.msu.cse.trivialpursuit.bigdraw;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 
 public class Drawing {
 
@@ -28,7 +30,7 @@ public class Drawing {
 	        /**
 	         * Color of segment
 	         */
-	        private int color = Color.WHITE;
+	        private int color = Color.BLACK;
 
 			/**
 	         * Thickness of segment
@@ -39,6 +41,7 @@ public class Drawing {
 	         * Last point of segment
 	         */
 	        private Point lastPoint = null;
+	        
 	        
 	        /**
 	         * Current point of segment
@@ -78,43 +81,43 @@ public class Drawing {
 	     * We will have one object of this type for each of the 
 	     * two possible touches.
 	     */
-	    //private class Touch {
+	    private class Touch {
 	        /**
 	         * Touch id
 	         */
-	        //public int id = -1;
+	        public int id = -1;
 	        
 	        /**
 	         * Current touch location
 	         */
-	        //public Point currTouch = new Point(0,0);       
+	        public Point currTouch = new Point(0,0);       
 	        
 	        /**
 	         * Previous touch location
 	         */
-	        //public Point lastTouch = new Point(0,0);
+	        public Point lastTouch = new Point(0,0);
 	        
 	        /**
 	         * Change in values from previous
 	         */
-	        //public Point deltas = new Point(0,0);       
+	        public Point deltas = new Point(0,0);       
 	        
 	        /**
 	         * Copy the current values to the previous values
 	         */
-	        /*public void copyToLast() {
+	        public void copyToLast() {
 	            lastTouch.x = currTouch.x;
 	            lastTouch.y = currTouch.y;
-	        }*/
+	        }
 	        
 	        /**
 	         * Compute the values of dX and dY
 	         */
-	        /*public void computeDeltas() {
+	        public void computeDeltas() {
 	            deltas.x = currTouch.x - lastTouch.x;
 	            deltas.y = currTouch.y - lastTouch.y;
-	        }*/
-	    //}
+	        }
+	    }
 	    
 	    private class Point {
 	    	/** 
@@ -131,6 +134,7 @@ public class Drawing {
 	    	 * Constructor for Point with two integers
 	    	 */
 	    	public Point(float x, float y) {
+	    		
 	    		this.x = x;
 	    		this.y = y;
 	    	}
@@ -148,7 +152,6 @@ public class Drawing {
 	     * Array of segments that make up the drawing
 	     */
 	    private ArrayList<Segment> segments = new ArrayList<Segment>();
-	    
 	    /**
 	     * Most recent X touch when dragging
 	     */
@@ -182,24 +185,39 @@ public class Drawing {
 	    /**
 	     * First touch status
 	     */
-	    //private Touch touch1 = new Touch();
+	    private Touch touch1 = new Touch();
 	    
 	    /**
 	     * Second touch status
 	     */
-	    //private Touch touch2 = new Touch();
-
+	    private Touch touch2 = new Touch();
+	    
+	    /**
+	     * Translate X
+	     */
+	   private float translateX = 0;
+	   
+	   /**
+	     * Translate Y
+	     */
+	    private float translateY = 0;
+	    
+	   /**
+	    * Angle of rotation (for color)
+	    */
+	    private float angle = 0;
+	    
 		/**
 	     * The drawing view in this activity's view
 	     */
-	    //private DrawView drawView;
+	    private DrawView drawView;
 		
 		/**
 		 * Constructor for Drawing
 		 * Initializes paint color and thickness
 		 */
 		public Drawing(Context context, DrawView drawView) {
-			//this.drawView = drawView;
+			this.drawView = drawView;
 			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			paint.setColor(color);
 			paint.setStrokeWidth(thickness);
@@ -243,6 +261,7 @@ public class Drawing {
 				paint.setColor(segment.getColor());
 				paint.setStrokeWidth(segment.getThickness());
 				canvas.drawLine(prevX, prevY, currX, currY, paint);
+				canvas.drawCircle(currX, currY, segment.getThickness()/2, paint);
 			}
 			canvas.restore();
 		}
@@ -257,24 +276,53 @@ public class Drawing {
 			if(editable) {
 				float x = event.getX();
 				float y = event.getY();
-			
-				switch(event.getActionMasked()) {
-				case MotionEvent.ACTION_DOWN:
-					lastX = x;
-					lastY = y;
-					return true;
-				
-	        	case MotionEvent.ACTION_UP:
-	        	case MotionEvent.ACTION_CANCEL:
-	        		return true;
-	        	
-	        	case MotionEvent.ACTION_MOVE:
-	        		addSegments(x, y);
-	        		lastX = x;
+				int id = event.getPointerId(event.getActionIndex());
+		        switch(event.getActionMasked()) {
+		        case MotionEvent.ACTION_DOWN:
+		            touch1.id = id;
+		            touch2.id = -1;
+		            getPositions(event);
+		        	touch1.copyToLast();
+		            return true;
+		            
+		        case MotionEvent.ACTION_POINTER_DOWN:
+		            if(touch1.id >= 0 && touch2.id < 0) {
+		                touch2.id = id;
+		                getPositions(event);
+		                touch2.copyToLast();
+		                return true;
+		            }
+		            break;
+		            
+		        case MotionEvent.ACTION_UP:
+		        case MotionEvent.ACTION_CANCEL:
+		            touch1.id = -1;
+		            touch2.id = -1;
+		            drawView.invalidate();
+		            return true;
+		            
+		        case MotionEvent.ACTION_POINTER_UP:
+		            if(id == touch2.id) {
+		                touch2.id = -1;
+		            } else if(id == touch1.id) {
+		                // Make what was touch2 now be touch1 by 
+		                // swapping the objects.
+		                Touch t = touch1;
+		                touch1 = touch2;
+		                touch2 = t;
+		                touch2.id = -1;
+		            }
+		            drawView.invalidate();
+		            return true;
+		            
+		        case MotionEvent.ACTION_MOVE:
+		        	lastX = x;
 	        		lastY = y;
-	        		view.invalidate();
-	        		return true;
-				}
+	                getPositions(event);
+	        		move();
+	        		drawView.invalidate();		            
+		            return true;
+		        }
 			}
 			return false;
 		}
@@ -287,6 +335,130 @@ public class Drawing {
 			segments.add(segment);
 		}
 		
+	    /**
+	     * Handle movement of the touches
+	     */
+	    private void move() {
+	        // If no touch1, we have nothing to do
+	        // This should not happen, but it never hurts
+	        // to check.
+	        if(touch1.id < 0 || touch2.id < 0) { 
+	            return;
+	        }
+/*	        
+	        if(touch1.id >= 0) {
+	            // At least one touch
+	            // We are moving
+	            touch1.computeDeltas();
+/*	            
+	            translateX += touch1.deltas.x;
+	            translateY += touch1.deltas.y;
+	        }
+	    */
+	        
+	        if(touch2.id >= 0) {
+	            // Two touches
+	            
+	            /*
+	             * Rotation
+	             */
+	            float angle1 = angle(touch1.lastTouch.x, touch1.lastTouch.y, touch2.lastTouch.x, touch2.lastTouch.y);
+	            float angle2 = angle(touch1.currTouch.x, touch1.currTouch.y, touch2.currTouch.x, touch2.currTouch.y);
+	            float da = angle2 - angle1;
+		        angle += da;
+	            color = computeColor(angle);
+	            setCurrColor(color);
+	        }
+	    }
+	    
+	    /**
+	     * Compute the new color based on the angle
+	     */
+	    public int computeColor(float angle)
+	    {
+	        if(angle<90 && angle > 0)
+	        {
+	        	color = Color.GREEN;
+	        }
+	        else if(angle > 90&& angle < 180)
+	        {
+	        	color = Color.BLUE;
+	        }
+	        else if(angle >180 && angle < 270)
+	        {
+	        	color = Color.RED;
+	        }
+	        else
+	        {
+	        	color = Color.GRAY;
+	        }
+	        return color;
+	    }
+	    
+	    /**
+	     * Rotate the image around the point x1, y1
+	     * @param dAngle Angle to rotate in degrees
+	     * @param x1 rotation point x
+	     * @param y1 rotation point y
+	     */
+/*	    public void rotate(float dAngle, float x1, float y1) {
+
+	        
+	        // Compute the radians angle
+	        double rAngle = Math.toRadians(dAngle);
+	        float ca = (float) Math.cos(rAngle);
+	        float sa = (float) Math.sin(rAngle);
+	        
+	        float xp = (translateX - x1) * ca - (translateY - y1) * sa + x1;
+	        float yp = (translateX - x1) * sa + (translateY - y1) * ca + y1;
+
+	        translateX = xp;
+	        translateY = yp;
+	    }*/
+	    
+	    /**
+	     * Determine the angle for two touches
+	     * @param x1 Touch 1 x
+	     * @param y1 Touch 1 y
+	     * @param x2 Touch 2 x
+	     * @param y2 Touch 2 y
+	     * @return computed angle in degrees
+	     */
+	    private float angle(float x1, float y1, float x2, float y2) {
+	        float dx = x2 - x1;
+	        float dy = y2 - y1;
+	        return (float) Math.toDegrees(Math.atan2(dy, dx));
+	    }
+	    
+	    /**
+	     * Get the positions for the two touches and put them
+	     * into the appropriate touch objects.
+	     * @param event the motion event
+	     */
+	    private void getPositions(MotionEvent event) {
+	        for(int i=0;  i<event.getPointerCount();  i++) {
+	            
+	            // Get the pointer id
+	            int id = event.getPointerId(i);
+	            
+	            // Convert to image coordinates
+	            float x = event.getX(i); 
+	            float y = event.getY(i);
+	            
+	            
+	            if(id == touch1.id) {
+	            	touch1.copyToLast();
+	                touch1.currTouch.x = x;
+	                touch1.currTouch.y = y;
+	            } else if(id == touch2.id) {
+	            	touch2.copyToLast();
+	                touch2.currTouch.x = x;
+	                touch2.currTouch.y = y;
+	            }
+	        }
+	        
+	        drawView.invalidate();
+	    }
 //		/**
 //		 * Load the drawing 
 //		 */
@@ -340,4 +512,12 @@ public class Drawing {
 //			bundle.putFloatArray(END_POINTS, endPoints);
 //		}
 
+		public boolean updateDrawing (View view, float x, float y){
+			addSegments(x, y);
+    		lastX = x;
+    		lastY = y;
+    		view.invalidate();
+    		return true;
+		}
+		
 }

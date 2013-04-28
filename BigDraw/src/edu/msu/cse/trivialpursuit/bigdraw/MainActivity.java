@@ -1,85 +1,127 @@
 package edu.msu.cse.trivialpursuit.bigdraw;
 
-import java.io.IOException;
-
-import android.media.AudioManager;
-import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
+import java.util.List;
+
+import android.graphics.Point;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.content.SharedPreferences;
+import android.view.Display;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.SeekBar;
+import android.widget.FrameLayout;
 import android.widget.ToggleButton;
 
 public class MainActivity extends Activity {
+	
+	private LocationManager locationManager = null;
+    
+    private double origLatitude = 0;
+    private double origLongitude = 0;
+    private boolean valid = false;
+    private double currLatitude = 0;
+    private double currLongitude = 0;
+    private static double Xpixel = 0;
+    private static double Ypixel=0;
+    public static Context mainActivity = null;
+
+    
+    public static double getXpixel() {
+		return Xpixel;
+	}
+
+	public void setXpixel(double xpixel) {
+		Xpixel = xpixel;
+	}
+
+	public static Context getContext()
+	{
+		return mainActivity;
+	}
+	public static double getYpixel() {
+		return Ypixel;
+	}
+
+	public void setYpixel(double ypixel) {
+		Ypixel = ypixel;
+	}
+
+	private SharedPreferences settings = null;
+    
+    public static final String PREFERENCES = "prefs";
+    
+    boolean exception = false;
+    List<Address> locations;
+    
+    private FrameLayout colorDisplay;
 	
 	/**
 	 * The drawing view in this activity's view
 	 */
 	private DrawView drawView;
 	
-	/**
-	 * The thickness bar
-	 */
-	private SeekBar thicknessBar;  
-	
+		
 	/**
 	 * The draw toggle
 	 */
 	private ToggleButton drawToggle; 
-	
-	/**
-	 * The media recorder to keep track of volume
-	 */
-	MediaRecorder recorder;
-	
-	/**
-	 * Amplitude of microphone input
-	 */
-	int amp;
+		
+	private class AccelListener implements SensorEventListener {
 
+		@Override
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		}
+
+		@Override
+		public void onSensorChanged(SensorEvent event) {
+			float thickness = (float) (event.values[2]-.1)*10;
+			
+			if (thickness < .1) {
+				drawView.setEditable(false);
+			} else {
+				drawView.setEditable(true);
+				drawView.setThickness(thickness);
+			}
+		}
+		
+	}
+	
+	SensorManager sensorManager = null;
+	private Sensor accelSensor = null;
+	private AccelListener accelListener = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		drawView = (DrawView) this.findViewById(R.id.drawView);
-		recorder = new MediaRecorder();
-		setUpMediaRecorder();
-		Thread thread = new Thread(new Runnable(){
+		//drawToggle = (ToggleButton) findViewById(R.id.drawToggle);
+		//thicknessBar = (SeekBar) findViewById(R.id.thicknessBar);
+		colorDisplay = (FrameLayout)this.findViewById(R.id.colorDisplay);
+		// Get the location manager
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);   
+        mainActivity = this;      
+        colorDisplay.setBackgroundColor(drawView.getColor());
+	}
+	
 
-			runOnUiThread(new Runnable() {
-	            @Override
-	            public void run() {
-	                risultato.setText("" + recorder.getMaxAmplitude());
-	            }
-	        });
-			
-		}
-		);
-		thread.start();
-		drawToggle = (ToggleButton) findViewById(R.id.drawToggle);
-		thicknessBar = (SeekBar) findViewById(R.id.thicknessBar);
-			
-		thicknessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {
-				drawView.setThickness(progress + 1);
-			}
-
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-			}
-		});
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		// TODO Auto-generated method stub
+		return super.onTouchEvent(event);
 	}
 
 	@Override
@@ -89,34 +131,187 @@ public class MainActivity extends Activity {
 		return true;
 	}
 	
-	public void onDrawToggle(View view) {
+	/*public void onDrawToggle(View view) {
 		drawView.setEditable(!drawToggle.isChecked());
-	}
+	}*/
+	
+	
+	private class ActiveListener implements LocationListener {
 
-	public void setUpMediaRecorder()
-	{
-		 recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-		 recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-		 recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-		 recorder.setOutputFile("/dev/null");
-		 try {
-			recorder.prepare();
-	 	 } catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		 } catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		 }
-	     recorder.start();   // Recording is now started
+		@Override
+		public void onLocationChanged(Location location) {
+			onLocation(location);
+			
+		}
+
+		@Override
+		public void onProviderDisabled(String provider) {
+			registerListeners();			
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			// TODO Auto-generated method stub
+		}
+	};
+    private ActiveListener activeListener = new ActiveListener();
+
+	private void registerListeners() {
+		unregisterListeners();
+		
+		// Create a Criteria object
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setPowerRequirement(Criteria.POWER_HIGH);
+        criteria.setAltitudeRequired(true);
+        criteria.setBearingRequired(false);
+        criteria.setSpeedRequired(false);
+        criteria.setCostAllowed(false);
+        
+        String bestAvailable = locationManager.getBestProvider(criteria, true);
+        
+        if(bestAvailable != null) {
+            locationManager.requestLocationUpdates(bestAvailable, 500, 1, activeListener);
+            Location location = locationManager.getLastKnownLocation(bestAvailable);
+            onLocation(location);
+        }
+		    
 	}
 	
-	public void unsetMediaRecorder()
-	{
-		 recorder.stop();
-		 recorder.reset();
-  // You can reuse the object by going back to setAudioSource() step
-		 recorder.release(); // Now the object cannot be reused
+	private void unregisterListeners() {
+		locationManager.removeUpdates(activeListener);
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+	private void onLocation(Location location) {
+        if(location == null) {
+            return;
+        }
+        
+        if (currLatitude == 0) {
+            currLatitude = location.getLatitude();
+            currLongitude = location.getLongitude();
+            return;
+        }        
+        
+        currLatitude = location.getLatitude();
+        currLongitude = location.getLongitude();
+        
+        //origLatitude = currLatitude;
+        //origLongitude = currLongitude;
+        
+        System.out.println("origLatitude "+origLatitude);
+        System.out.println("origLongitude "+origLongitude);
+        
+        valid = true;
+        
+         /*float[] results = new float[1];
+		 Location.distanceBetween(origLatitude, origLongitude, currLatitude, currLongitude, results);
+		 float distance = results[0];
+		 System.out.println("distance "+distance);*/
+			 
+		 Display display = getWindowManager().getDefaultDisplay();
+		 Point size = new Point();
+		 display.getSize(size);
+		 int width = size.x;
+		 int height = size.y;
 		 
+		 
+		/* if (startx ==0 || starty ==0) {
+			 startx = (float) origLongitude;
+			 starty = (float) origLatitude;
+		 }
+		 
+		 changex = (float) (currLongitude - startx);
+		 changey = (float) (currLatitude - starty);
+		 
+		 if (changex <0){
+			 changex = changex*10;
+		 }
+		 if (changex >10){
+			 changex = changex/10;
+		 }
+		 if (changey <0){
+			 changey = changey*10;
+		 }
+		 if (changey >10){
+			 changey = changey/10;
+		 }
+		 
+		 changex = changex*100000;
+		 changey = changey*100000;
+		 drawx += changex;
+		 drawy += changey;
+		 
+		 System.out.println("startx"+startx);
+		 System.out.println("changex"+changex);
+		 System.out.println("changey"+changey);*/
+		 
+		 	//engineering building coordinates
+		 	//double A =  42.724987, B=42.724228, X=-84.481935, Y=-84.480143;
+		 
+		 	//msu campus coordinates
+		 	double A =  42.735508, B=42.718705, X=-84.462297, Y=-84.493968;
+ 			double Z= Y-X;
+ 			double C= A-B;
+ 			double J= currLongitude, K=currLatitude;
+ 			Xpixel = ((Y-J)/Z)*width;
+ 			Ypixel = ((A-K)/C)*height;
+ 			//double Xpixel = ((180+J)*width/360), Ypixel = ((90-K)*height/180);
+ 			if (origLatitude != currLatitude){
+ 				drawView.updateDrawing((float)Xpixel, (float)Ypixel);
+ 			}
+ 			 System.out.println(Xpixel);
+ 			 System.out.println(Ypixel);
+		 
+		 	/*currLatitude = currLatitude * Math.PI / 180;
+		    currLongitude = currLongitude * Math.PI / 180;
+
+		    double x = 6371 * Math.sin(currLatitude) * Math.cos(currLongitude);
+		    double y = 6371 * Math.sin(currLatitude) * Math.sin(currLongitude);
+		    
+		    System.out.println(x);
+			System.out.println(y);*/
+ 			  		 			
+ 		
+ 		//viewDistance.setText(String.format("%1$6.1fm", distance));
+        //Set these values to draw as they change***********
+        //by updating the draw interface
+    }
+
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		if(accelSensor != null) {
+			accelListener = new AccelListener();
+			sensorManager.registerListener(accelListener, accelSensor, SensorManager.SENSOR_DELAY_GAME);
+		}
+		registerListeners();
+	}
+	
+	public void onSend(View view) {
+		ViewSender sender = new ViewSender();
+		sender.sendView(this, drawView, "Trivial Pursuit");
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		unregisterListeners();
+		if(accelSensor != null) {
+			sensorManager.unregisterListener(accelListener);
+			sensorManager = null;
+			accelListener = null;
+			accelSensor = null;
+		}
+		super.onPause();
 	}
 }
