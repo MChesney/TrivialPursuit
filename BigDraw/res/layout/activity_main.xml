@@ -13,19 +13,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true" />
 
-    <FrameLayout
-        android:id="@+id/colorDisplay"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_alignBottom="@+id/sendButton"
-        android:layout_alignTop="@+id/sendButton"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/sendButton"
-        android:background="@android:color/black"
-        android:scrollbarStyle="insideOverlay" />
-
     <Button
         android:id="@+id/sendButton"
         android:layout_width="wrap_content"

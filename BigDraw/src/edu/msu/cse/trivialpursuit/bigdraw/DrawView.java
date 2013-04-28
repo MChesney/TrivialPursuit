@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 
 public class DrawView extends View {
 	
@@ -52,10 +51,6 @@ public class DrawView extends View {
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		crosshairX = event.getX(0) - crosshair.getWidth()/2;
-		crosshairY = event.getY(0) - crosshair.getHeight()/2;
-		FrameLayout colorDisplay = (FrameLayout) this.findViewById(R.id.colorDisplay);
-		colorDisplay.setBackgroundColor(drawing.getCurrColor());
 		return drawing.onTouchEvent(this, event);
 	}
 	
@@ -89,7 +84,9 @@ public class DrawView extends View {
 	}
 	
 	public boolean updateDrawing(float x, float y) {
-		  return drawing.updateDrawing(this, x, y);
-		}
+		crosshairX = x - crosshair.getWidth()/2;
+		crosshairY = y - crosshair.getHeight()/2;
+		return drawing.updateDrawing(this, x, y);
+	}
 
 }
