@@ -171,11 +171,10 @@ public class MainActivity extends Activity {
         currLatitude = location.getLatitude();
         currLongitude = location.getLongitude();
 			 
-		 Display display = getWindowManager().getDefaultDisplay();
-		 Point size = new Point();
-		 display.getSize(size);
-		 int width = size.x;
-		 int height = size.y;
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int height = displaymetrics.heightPixels;
+        int width = displaymetrics.widthPixels;
 		 
 		 //engineering building coordinates
 		 double LatA = 42.724987, LatB = 42.724228, LongX = -84.481935, LongY = -84.480143;
