@@ -1,13 +1,10 @@
 package edu.msu.cse.trivialpursuit.bigdraw;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import java.util.List;
 
-import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -18,11 +15,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.content.SharedPreferences;
-import android.view.Display;
+import android.util.DisplayMetrics;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ToggleButton;
 
 public class MainActivity extends Activity {

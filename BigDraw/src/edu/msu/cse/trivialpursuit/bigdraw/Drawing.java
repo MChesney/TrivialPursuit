@@ -347,17 +347,6 @@ public class Drawing {
 	        if(touch1.id < 0 || touch2.id < 0) { 
 	            return;
 	        }
-/*	        
-	        if(touch1.id >= 0) {
-	            // At least one touch
-	            // We are moving
-	            touch1.computeDeltas();
-/*	            
-	            translateX += touch1.deltas.x;
-	            translateY += touch1.deltas.y;
-	        }
-	    */
-	        
 	        if(touch2.id >= 0) {
 	            // Two touches
 	            
@@ -378,17 +367,33 @@ public class Drawing {
 	     */
 	    public int computeColor(float angle)
 	    {
-	        if(angle<90 && angle > 0)
+	        if(angle<45 && angle > 0)
 	        {
 	        	color = Color.GREEN;
 	        }
-	        else if(angle > 90&& angle < 180)
+	        else if(angle<90 && angle > 45)
+	        {
+	        	color = Color.CYAN;
+	        }
+	        else if(angle > 90&& angle < 135)
 	        {
 	        	color = Color.BLUE;
 	        }
-	        else if(angle >180 && angle < 270)
+	        else if(angle > 135 && angle < 180)
+	        {
+	        	color = Color.BLACK;
+	        }
+	        else if(angle > 180&& angle < 225)
+	        {
+	        	color = Color.WHITE;
+	        }
+	        else if(angle >225 && angle < 270)
 	        {
 	        	color = Color.RED;
+	        }
+	        else if(angle > 270&& angle < 315)
+	        {
+	        	color = Color.MAGENTA;
 	        }
 	        else
 	        {
@@ -397,26 +402,6 @@ public class Drawing {
 	        return color;
 	    }
 	    
-	    /**
-	     * Rotate the image around the point x1, y1
-	     * @param dAngle Angle to rotate in degrees
-	     * @param x1 rotation point x
-	     * @param y1 rotation point y
-	     */
-/*	    public void rotate(float dAngle, float x1, float y1) {
-
-	        
-	        // Compute the radians angle
-	        double rAngle = Math.toRadians(dAngle);
-	        float ca = (float) Math.cos(rAngle);
-	        float sa = (float) Math.sin(rAngle);
-	        
-	        float xp = (translateX - x1) * ca - (translateY - y1) * sa + x1;
-	        float yp = (translateX - x1) * sa + (translateY - y1) * ca + y1;
-
-	        translateX = xp;
-	        translateY = yp;
-	    }*/
 	    
 	    /**
 	     * Determine the angle for two touches
